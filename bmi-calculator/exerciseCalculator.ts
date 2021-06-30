@@ -39,4 +39,31 @@ const calculateExercises = (dailyExercises: Array<number>, trainingTarget: numbe
   return result
 }
 
-console.log( calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2) )
+interface ExerciseArgs {
+  target: number
+  dailyExercises: Array<number>
+}
+
+const parseExerciseArgs = (args: Array<string>): ExerciseArgs => {
+  if (args.length < 10) throw new Error('Not enough arguments')
+  if (args.length > 10) throw new Error('Too many arguments')
+
+  const [target, ...dailyExercises] = args.slice(2).map(Number)
+  const isDailyExerciseNaN = dailyExercises.some(isNaN)
+
+  if ( isNaN(target) || isDailyExerciseNaN ) {
+    throw new Error('Provided values were not numbers!')
+  }
+
+  return {
+    target,
+    dailyExercises
+  }
+}
+
+try {
+  const { target, dailyExercises } = parseExerciseArgs(process.argv)
+  console.log( calculateExercises(dailyExercises, target) )
+} catch (exception) {
+  console.error('Error, something went wrong', exception.message)
+}
