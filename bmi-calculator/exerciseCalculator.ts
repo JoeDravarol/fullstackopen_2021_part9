@@ -8,7 +8,7 @@ interface ExerciseResult {
   average: number;
 }
 
-const calculateExercises = (dailyExercises: Array<number>, trainingTarget: number): ExerciseResult => {
+export const calculateExercises = (dailyExercises: Array<number>, trainingTarget: number): ExerciseResult => {
   const periodLength = dailyExercises.length;
   const trainingDays = dailyExercises.filter(Boolean).length;
   
@@ -38,33 +38,3 @@ const calculateExercises = (dailyExercises: Array<number>, trainingTarget: numbe
 
   return result;
 };
-
-interface ExerciseArgs {
-  target: number
-  dailyExercises: Array<number>
-}
-
-const parseExerciseArgs = (args: Array<string>): ExerciseArgs => {
-  if (args.length < 10) throw new Error('Not enough arguments');
-  if (args.length > 10) throw new Error('Too many arguments');
-
-  const [target, ...dailyExercises] = args.slice(2).map(Number);
-  const isDailyExerciseNaN = dailyExercises.some(isNaN);
-
-  if ( isNaN(target) || isDailyExerciseNaN ) {
-    throw new Error('Provided values were not numbers!');
-  }
-
-  return {
-    target,
-    dailyExercises
-  };
-};
-
-try {
-  const { target, dailyExercises } = parseExerciseArgs(process.argv);
-  console.log( calculateExercises(dailyExercises, target) );
-} catch (error) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  console.error('Error, something went wrong', error.message);
-}
