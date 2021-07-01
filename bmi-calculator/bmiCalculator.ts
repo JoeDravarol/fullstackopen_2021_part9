@@ -1,8 +1,17 @@
-const calculateBMI = (height: number, weight: number): number => {
+export const calculateBMI = (height: number, weight: number): string => {
   // Height in cm
   // Weight in kg
-  const result = ( (weight / height ** 2) * 10000 ).toFixed(1)
-  return Number(result)
+  const result = Number( ( (weight / height ** 2) * 10000 ).toFixed(1) )
+
+  if (result < 18.5) {
+    return 'Underweight'
+  } else if (result >= 18.5 && result < 25) {
+    return 'Normal (healthy weight)'
+  } else if (result >= 25 && result < 30) {
+    return 'Overweight'
+  }
+  
+  return 'obese'
 }
 
 interface BmiArgs {
@@ -13,9 +22,6 @@ interface BmiArgs {
 const parseArguments = (args: Array<string>): BmiArgs => {
   if (args.length < 4) throw new Error('Not enough arguments')
   if (args.length > 4) throw new Error('Too many arguments')
-
-  const [target, ...dailyExercises] = args.slice(2).map(Number)
-  const isDailyExerciseNaN = dailyExercises.some(isNaN)
 
   if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
     return {
