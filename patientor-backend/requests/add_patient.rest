@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+  "name": "Anna McClane",
+  "dateOfBirth": "1990-07-03",
+  "ssn": "432179-75A",
+  "gender": "female",
+  "occupation": "Nurse"
+}
