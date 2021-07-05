@@ -1,20 +1,16 @@
 import React from 'react'
+import Part from './Part'
+import { CoursePart } from '../helpers/types'
 
-type CourseParts = {
-  name: string;
-  exerciseCount: number;
-}
 interface ContentProps {
-  courseParts: Array<CourseParts>
+  courseParts: CoursePart[]
 }
 
 const Content = ({ courseParts }: ContentProps): JSX.Element  => {
   return (
     <>
       {courseParts.map(course => (
-        <p key={course.name}>
-          {course.name} {course.exerciseCount}
-        </p>
+        <Part key={course.name} part={course} />
       ))}
     </>
   )
