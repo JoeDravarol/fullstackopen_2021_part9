@@ -5,18 +5,20 @@ type Fields = {
   dateOfBirth: unknown,
   ssn: unknown,
   gender: unknown,
-  occupation: unknown
+  occupation: unknown,
+  entries: unknown
 };
 
 const toNewPatientEntry = ({
-  name, dateOfBirth, ssn, gender, occupation
+  name, dateOfBirth, ssn, gender, occupation, entries
 }: Fields): NewPatientEntry => {
   const newEntry: NewPatientEntry = {
     name: parseName(name),
     dateOfBirth: parseDOB(dateOfBirth),
     ssn: parseSSN(ssn),
     gender: parseGender(gender),
-    occupation: parseOccupation(occupation)
+    occupation: parseOccupation(occupation),
+    entries: parseEntries(entries)
   };
 
   return newEntry;
@@ -33,6 +35,11 @@ const isDate = (date: string): boolean => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isGender = (param: any): param is Gender => {
   return Object.values(Gender).includes(param);
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isArray = (param: any): boolean => {
+  return param.constructor === Array;
 };
 
 const parseName = (name: unknown): string => {
@@ -68,6 +75,14 @@ const parseOccupation = (occupation: unknown): string => {
     throw new Error('Invalid or missing occupation');
   }
   return occupation;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const parseEntries = (entries: unknown): any => {
+  if (!entries || !isArray(entries)) {
+    throw new Error('Invalid or missing entries');
+  }
+  return entries;
 };
 
 export default toNewPatientEntry;
