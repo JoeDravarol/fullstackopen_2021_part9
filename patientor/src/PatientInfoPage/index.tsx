@@ -5,6 +5,7 @@ import axios from 'axios';
 import { apiBaseUrl } from '../constants';
 import { Patient } from "../types";
 
+import Entries from '../components/Entries';
 import GenderIcon from '../components/GenderIcon';
 import { setPatient, useStateValue } from '../state';
 
@@ -34,14 +35,17 @@ const PatientInfoPage = () => {
   }
 
   return (
-    <div>
-      <h2>
-        {patient.name}
-        <GenderIcon gender={patient.gender} />
-      </h2>
-      <p>ssn: {patient.ssn}</p>
-      <p>occupation: {patient.occupation}</p>
-    </div>
+    <>
+      <div>
+        <h2>
+          {patient.name}
+          <GenderIcon gender={patient.gender} />
+        </h2>
+        <p>ssn: {patient.ssn}</p>
+        <p>occupation: {patient.occupation}</p>
+      </div>
+      <Entries entries={patient.entries} />
+    </>
   );
 };
 
