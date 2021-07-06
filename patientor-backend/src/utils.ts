@@ -1,4 +1,4 @@
-import { NewPatientEntry, Gender } from './types';
+import { NewPatientEntry, Gender, Entry } from './types';
 
 type Fields = {
   name: unknown,
@@ -6,7 +6,7 @@ type Fields = {
   ssn: unknown,
   gender: unknown,
   occupation: unknown,
-  entries: unknown
+  entries: unknown[]
 };
 
 const toNewPatientEntry = ({
@@ -40,6 +40,11 @@ const isGender = (param: any): param is Gender => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isArray = (param: any): boolean => {
   return param.constructor === Array;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isEntry = (param: any): boolean => {
+  return ['Hospital', 'HealthCheck', 'OccupationalHealthcare'].includes(param.type);
 };
 
 const parseName = (name: unknown): string => {
@@ -77,12 +82,13 @@ const parseOccupation = (occupation: unknown): string => {
   return occupation;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const parseEntries = (entries: unknown): any => {
-  if (!entries || !isArray(entries)) {
+const parseEntries = (entries: unknown[]): Entry[] => {
+  if (
+    !entries || !isArray(entries) || !entries.some((entry: unknown) => isEntry(entry))
+  ) {
     throw new Error('Invalid or missing entries');
   }
-  return entries;
+  return entries as Entry[];
 };
 
 export default toNewPatientEntry;
