@@ -6,7 +6,7 @@ import { apiBaseUrl } from '../constants';
 import { Patient } from "../types";
 
 import GenderIcon from '../components/GenderIcon';
-import { useStateValue } from '../state';
+import { setPatient, useStateValue } from '../state';
 
 const PatientInfoPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,7 +18,7 @@ const PatientInfoPage = () => {
         const { data } = await axios.get<Patient>(
           `${apiBaseUrl}/patients/${id}`
         );
-        dispatch({ type: 'SET_PATIENT', payload: data });
+        dispatch( setPatient(data) );
       } catch (e) {
         console.error(e);
       }
