@@ -1,5 +1,6 @@
 import React from 'react';
 import { Entry as EntryType, Diagnosis } from '../types';
+import { useStateValue } from '../state';
 
 interface EntryProps {
   entry: EntryType
@@ -7,13 +8,16 @@ interface EntryProps {
 
 const Entry = ({ entry }: EntryProps) => {
   const diagnosisCodes: Array<Diagnosis['code']> | undefined = entry.diagnosisCodes;
+  const [{ diagnoses }] = useStateValue();
 
   return (
     <div>
       <p>{entry.date} {entry.description}</p>
       <ul>
         {diagnosisCodes?.map((code:  Diagnosis['code']) =>
-          <li key={entry.id + code}>{code}</li>
+          <li key={entry.id + code}>
+            {code} {diagnoses.find(diagnose => diagnose.code === code)?.name}
+          </li>
         )}
       </ul>
     </div>
