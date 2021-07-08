@@ -18,7 +18,7 @@ const HospitalEntry = ({ entry }: HospitalEntryProps) => {
           {entry.description}
         </Card.Description>
 
-        <Card.Description extra>
+        <Card.Description>
           <h4>Discharge</h4>
           date: {entry.discharge.date} <br/>
           criteria: {entry.discharge.criteria}
