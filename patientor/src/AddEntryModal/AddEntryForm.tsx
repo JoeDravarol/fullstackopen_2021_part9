@@ -3,19 +3,19 @@ import { Grid, Button } from "semantic-ui-react";
 import { Field, Formik, Form } from 'formik';
 
 import { useStateValue } from '../state';
-import { EntryWithoutId } from '../types';
+import { FakeEntryFormValues, EntryType } from '../types';
 
-import { TextField, DiagnosisSelection, TypeOption, SelectField } from './FormField';
+import { TextField, DiagnosisSelection, TypeOption, SelectField, NumberField } from './FormField';
 
 interface Props {
-  onSubmit: (values: EntryWithoutId) => void;
+  onSubmit: (values: FakeEntryFormValues) => void;
   onCancel: () => void;
 }
 
 const typeOptions: TypeOption[] = [
   { value: 'Hospital', label: 'Hospital' },
   { value: 'HealthCheck', label: 'Health Check' },
-  { value: 'OccupationalHealthcare', label: 'Occupational Healthcare' },
+  { value: 'OccupationalHealthcare', label: 'Occupational Healthcare' }
 ];
 
 const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
@@ -24,14 +24,20 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
   return (
     <Formik
       initialValues={{
-        type: "Hospital",
+        type: EntryType.Hospital,
         description: "",
         date: "",
         specialist: "",
         discharge: {
           date: "",
           criteria: ""
-        }
+        },
+        healthCheckRating: 0,
+        employerName: "",
+        sickLeave: {
+          startDate: "",
+          endDate: "",
+        },
       }}
       onSubmit={onSubmit}
       validate={values => {
@@ -46,12 +52,12 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
+        // Validate Hospital
         return errors;
       }}
     >
-      {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
+      {({ isValid, dirty, setFieldValue, setFieldTouched, values }) => {
         return (
-          
           <Form className="form ui">
             <SelectField
               label="Entry Type"
@@ -76,18 +82,55 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
               name="specialist"
               component={TextField}
             />
-            <Field
-              label="Discharge Date"
-              placeholder="YYYY-MM-DD"
-              name="discharge.date"
-              component={TextField}
-            />
-            <Field
-              label="Discharge Criteria"
-              placeholder="description of discharge criteria"
-              name="discharge.criteria"
-              component={TextField}
-            />
+
+            {values.type === 'Hospital' && (
+              <>
+                <Field
+                  label="Discharge Date"
+                  placeholder="YYYY-MM-DD"
+                  name="discharge.date"
+                  component={TextField}
+                />
+                <Field
+                  label="Discharge Criteria"
+                  placeholder="description of discharge criteria"
+                  name="discharge.criteria"
+                  component={TextField}
+                />
+              </>
+            )}
+            {values.type === 'HealthCheck' && (
+              <Field
+                label="Health Check Rating"
+                name="healthCheckRating"
+                component={NumberField}
+                min={0}
+                max={3}
+              />
+            )}
+            {values.type === 'OccupationalHealthcare' && (
+              <>
+                <Field
+                  label="Employer Name"
+                  placeholder="name"
+                  name="employerName"
+                  component={TextField}
+                />
+                <Field
+                  label="Sick Leave Start Date"
+                  placeholder="YYYY-MM-DD"
+                  name="sickLeave.startDate"
+                  component={TextField}
+                />
+                <Field
+                  label="Sick Leave End Date"
+                  placeholder="YYYY-MM-DD"
+                  name="sickLeave.endDate"
+                  component={TextField}
+                />
+              </>
+            )}
+
             <DiagnosisSelection
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}

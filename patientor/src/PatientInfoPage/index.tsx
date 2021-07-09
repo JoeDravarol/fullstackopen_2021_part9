@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import axios from 'axios';
 
 import { apiBaseUrl } from '../constants';
-import { Patient, EntryWithoutId } from "../types";
+import { Patient, FakeEntryFormValues } from "../types";
 import { setPatient, useStateValue } from '../state';
 
 import Entries from '../components/Entries';
@@ -24,7 +24,7 @@ const PatientInfoPage = () => {
     setError(undefined);
   };
 
-  const submitNewEntry = async (values: EntryWithoutId) => {
+  const submitNewEntry = async (values: FakeEntryFormValues) => {
     try {
       const { data: updatedPatient } = await axios.post<Patient>(
         `${apiBaseUrl}/patients/${id}/entries`,

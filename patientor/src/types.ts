@@ -35,21 +35,31 @@ export enum HealthCheckRating {
   'CriticalRisk' = 3
 }
 
+export enum EntryType {
+  Hospital = 'Hospital',
+  HealthCheck = 'HealthCheck',
+  OccupationalHealthcare = 'OccupationalHealthcare'
+}
+
+interface Discharge {
+  date: string;
+  criteria: string;
+}
+
+interface SickLeave {
+  startDate: string;
+  endDate: string;
+}
+
 export interface HospitalEntry extends BaseEntry {
   type: 'Hospital';
-  discharge: {
-    date: string;
-    criteria: string;
-  };
+  discharge: Discharge;
 }
 
 export interface OccupationalHealthcareEntry extends BaseEntry {
   type: 'OccupationalHealthcare';
   employerName: string;
-  sickLeave?: {
-    startDate: string;
-    endDate: string;
-  };
+  sickLeave?: SickLeave;
 }
 
 export interface HealthCheckEntry extends BaseEntry {
@@ -63,6 +73,14 @@ export type Entry =
   | HealthCheckEntry;
 
 // Define special omit for unions
-type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+export type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
 // Define Entry without the 'id' property
 export type EntryWithoutId = UnionOmit<Entry, 'id'>;
+
+export interface FakeEntryFormValues extends Omit<BaseEntry, 'id'> {
+  type: EntryType;
+  discharge?: Discharge;
+  healthCheckRating?: HealthCheckRating;
+  employerName?: string;
+  sickLeave?: SickLeave;
+}

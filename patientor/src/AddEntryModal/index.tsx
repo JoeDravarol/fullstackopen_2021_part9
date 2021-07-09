@@ -1,12 +1,12 @@
 import React from 'react';
 import { Modal, Segment } from 'semantic-ui-react';
 import AddEntryForm from './AddEntryForm';
-import { EntryWithoutId } from '../types';
+import { FakeEntryFormValues } from '../types';
 
 interface Props {
   modalOpen: boolean;
   onClose: () => void;
-  onSubmit: (values: EntryWithoutId) => void;
+  onSubmit: (values: FakeEntryFormValues) => void;
   error?: string;
 }
 

@@ -4,7 +4,7 @@ import { Dropdown, DropdownProps, Form } from "semantic-ui-react";
 import { Diagnosis } from "../types";
 
 export type TypeOption = {
-  value: string;
+  value: 'Hospital' | 'HealthCheck' | 'OccupationalHealthcare';
   label: string;
 };
 
