@@ -4,6 +4,7 @@ import { Field, Formik, Form } from 'formik';
 
 import { useStateValue } from '../state';
 import { FakeEntryFormValues, EntryType } from '../types';
+import { isDate } from '../utils';
 
 import { TextField, DiagnosisSelection, TypeOption, SelectField, NumberField } from './FormField';
 
@@ -17,6 +18,10 @@ const typeOptions: TypeOption[] = [
   { value: 'HealthCheck', label: 'Health Check' },
   { value: 'OccupationalHealthcare', label: 'Occupational Healthcare' }
 ];
+
+interface NestedErrorField {
+  [field: string]: string;
+}
 
 const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
   const [{ diagnoses }] = useStateValue();
@@ -42,7 +47,8 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
       onSubmit={onSubmit}
       validate={values => {
         const requiredError = "Field is required";
-        const errors: { [field: string]: string } = {};
+        const malformattedError = 'Invalid format of ';
+        const errors: { [field: string]: string | NestedErrorField }  = {};
         if (!values.description) {
           errors.description = requiredError;
         }
@@ -53,6 +59,51 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
           errors.specialist = requiredError;
         }
         // Validate Hospital
+        if (values.type === 'Hospital') {
+          errors.discharge = {};
+          const date = values.discharge?.date;
+          const criteria = values.discharge?.criteria;
+
+          // Empty field
+          if (!date) {
+            errors.discharge.date = requiredError;
+          } 
+          if (!criteria) {
+            errors.discharge.criteria = requiredError;
+          }
+
+          // Invalid data
+          if (date && !isDate(date)) {
+            errors.discharge.date = malformattedError + `date YYYY-MM-DD`;
+          }
+        }
+        // Validate HealthCheck
+        if (values.type === 'HealthCheck') {
+          const rating = values?.healthCheckRating;
+
+          if (!rating) {
+            errors.healthCheckRating = 'Invalid or missing Health Check Rating';
+          } else if (rating < 0 || rating > 3) {
+            errors.healthCheckRating = 'Health check rating must be between 0-3'; 
+          }
+        }
+        // Validate OccupationalHealthcare
+        if (values.type === 'OccupationalHealthcare') {
+          errors.sickLeave = {};
+          const startDate = values.sickLeave?.startDate;
+          const endDate = values.sickLeave?.endDate;
+
+          if (!values.employerName) {
+            errors.employerName = requiredError;
+          }
+
+          if (startDate && !isDate(startDate)) {
+            errors.sickLeave.startDate = malformattedError + `date YYYY-MM-DD`;
+          }
+          if (endDate && !isDate(endDate)) {
+            errors.sickLeave.endDate = malformattedError + `date YYYY-MM-DD`;
+          }
+        }
         return errors;
       }}
     >
